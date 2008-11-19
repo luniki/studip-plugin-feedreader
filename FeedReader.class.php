@@ -97,10 +97,10 @@ class FeedReader extends AbstractStudIPHomepagePlugin {
 
     $message = '';
 
-    if (isset($_POST['url']) && '' !== $_POST['url']) {
+    if (isset($_REQUEST['url']) && '' !== $_REQUEST['url']) {
       $feed = new FeedReader_Feed();
       $feed->user_id = $GLOBALS['auth']->auth['uid'];
-      $feed->url = $_POST['url'];
+      $feed->url = $_REQUEST['url'];
 
       $pie = @$this->get_simplepie_from_user_feed($feed);
       $error = $pie->error();

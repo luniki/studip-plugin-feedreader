@@ -127,28 +127,36 @@ var FeedReaderPlugin = function() {
     }
 }();
 
-<? if ($plugin->is_authorized()) : ?>
-
 document.observe("dom:loaded", function() {
-
-  Sortable.create("feed_reader_feeds", {
-    handle: "drag_handle",
-    constraint: "vertical",
-    onUpdate: function() {
-      new Ajax.Request("<?= PluginEngine::getLink($plugin, array(), 'sort') ?>",
-        { parameters: Sortable.serialize("feed_reader_feeds", { name: 'feeds' }) });
-    }
-  });
 
   $$(".feed_reader_title").each(function (title) {
     title.observe('mouseover', FeedReaderPlugin.showNubbin.curry(title));
   });
 
-  $$(".feed_reader_delete > a").each(function (anchor) {
-    anchor.observe('click', FeedReaderPlugin.deleteFeed.curry(anchor));
-  });
+  <? if ($plugin->is_authorized()) : ?>
+
+    Sortable.create("feed_reader_feeds", {
+      handle: "drag_handle",
+      constraint: "vertical",
+      onUpdate: function() {
+        new Ajax.Request("<?= PluginEngine::getLink($plugin, array(), 'sort') ?>",
+          { parameters: Sortable.serialize("feed_reader_feeds", { name: 'feeds' }) });
+      }
+    });
+
+
+    $$(".feed_reader_delete > a").each(function (anchor) {
+      anchor.observe('click', FeedReaderPlugin.deleteFeed.curry(anchor));
+    });
+
+  <? else : ?>
+
+    $$(".feed_reader_delete > a").each(function (anchor) {
+      anchor.observe('click', FeedReaderPlugin.deleteFeed.curry(anchor));
+    });
+  <? endif ?>
+
 });
 
-<? endif ?>
 </script>
 
