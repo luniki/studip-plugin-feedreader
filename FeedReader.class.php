@@ -211,6 +211,11 @@ class FeedReader extends AbstractStudIPHomepagePlugin {
     // this hack is necessary to disable the standard Stud.IP layout
     ob_end_clean();
 
+    if (!$this->is_authorized()) {
+      header('HTTP/1.1 403 Forbidden', TRUE, 403);
+      exit;
+    }
+
     if (!FeedReader_Feed::sort($this->getRequestedUser()->getUserid(),
                                $_REQUEST['feeds'])) {
       header('HTTP/1.1 404 Not found', TRUE, 404);
