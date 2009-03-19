@@ -288,7 +288,7 @@ class FeedReader extends AbstractStudIPHomepagePlugin {
   function get_simplepie_from_user_feed($user_feed) {
 
     if (!class_exists('SimplePie'))
-      require_once dirname(__FILE__) . '/vendor/SimplePie 1.0.1/simplepie.inc';
+      require_once dirname(__FILE__) . '/vendor/SimplePie 1.1.3/simplepie.inc';
 
     $feed = new SimplePie($user_feed->url, $GLOBALS['TMP_PATH']);
     $feed->set_output_encoding('ISO-8859-1');
