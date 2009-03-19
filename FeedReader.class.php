@@ -29,7 +29,6 @@ require_once 'models/feed.php';
  *
  * @author    mlunzena
  * @copyright (c) Authors
- * @version   $Id: FeedReader.class.php 589 2008-02-26 11:14:38Z mlunzena $
  */
 
 class FeedReader extends AbstractStudIPHomepagePlugin {
