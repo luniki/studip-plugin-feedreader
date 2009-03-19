@@ -1,9 +1,16 @@
 <style type="text/css" media="screen">
 /* <![CDATA[ */
 
+.feed_reader_subscription_bar {
+  font-size: 0.75em;
+  background-color: #EDF3FE;
+  padding: 7px 25px 9px 20px;
+  margin: 0.5em 0.5em 1em 32px;
+}
+
 #feed_reader_feeds {
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
+  margin: 0.5em 0.5em 1em 32px;
+  padding: 0;
   list-style: none;
 }
 
@@ -74,11 +81,9 @@ div.feed_reader_nubbin li a span {
   color:#777777;
 }
 
-.feed_reader_subscription_bar {
-  font-size: 0.75em;
-  background-color: #EDF3FE;
-  padding: 7px 25px 9px 20px;
-  margin-bottom: 1em;
+blockquote .feed_reader_subscription_bar, blockquote #feed_reader_feeds {
+  margin-left: -8px;
+  padding-right: -40px;
 }
 
 /* ]]> */
