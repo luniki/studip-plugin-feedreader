@@ -8,6 +8,11 @@
     vor <?= distance_of_time_in_words($item->get_date('U')) ?>
   <? endif ?>
 
-
+  <? $enclosure = $item->get_enclosure(); ?>
+  <? if ($enclosure && $enclosure->get_link()) : ?>
+    <a href="<?= htmlReady($enclosure->get_link()) ?>" target="_blank">
+      <?= Assets::img("podcast_icon.gif", array("align" => "absmiddle")) ?>
+    </a>
+  <? endif ?>
 </div>
 
