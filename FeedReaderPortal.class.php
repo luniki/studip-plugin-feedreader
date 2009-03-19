@@ -107,7 +107,7 @@ class FeedReaderPortal extends AbstractStudIPPortalPlugin {
       $feeds[] = FeedReader::get_simplepie_from_user_feed($f);
     }
 
-    $limit = 5;
+    $limit = 15;
     $plugin = PluginEngine::getPlugin('FeedReader');
     $thats_me = new StudIPUser();
     $thats_me->setUserid($GLOBALS['auth']->auth['uid']);
