@@ -1,6 +1,6 @@
 <div class="feed_reader_item">
   <a target="_blank" href="<?= $item->get_permalink() ?>">
-    <img src="<?= $plugin->getPluginPath() ?>/img/icon-item.gif" alt="">
+    <img src="<?= $plugin->getPluginURL() ?>/img/icon-item.gif" alt="">
     <span class="feed_reader_item_title"><?= $item->get_title() ?></span>
   </a>
   <span class="feed_reader_item_snippet"><?= FeedReader::shortdesc(strip_tags($item->get_description()), 250) ?></span>

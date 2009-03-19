@@ -39,10 +39,10 @@
   <? foreach ($feeds as $feed) : ?>
     <li id="feed_reader_list_feed_<?= $feed->id ?>">
       <a href="<?= PluginEngine::getLink($plugin, array('feed_id' => $feed->id), 'delete') ?>">
-        <?= Assets::img('trash.gif', array('alt' => 'Löschen', 'size' => '11@11')) ?>
+        <img src="<?= $plugin->getPluginURL() ?>/img/trash.gif" alt="Löschen"/>
       </a>
       <a href="<?= PluginEngine::getLink($plugin, array('feed_id' => $feed->id), 'edit') ?>">ändern</a>
-        <?= Assets::img('drag_handle.gif', array('alt' => 'Sortieren', 'class' => 'drag_handle', 'style' => 'display: none;')) ?>
+        <img src="<?= $plugin->getPluginURL() ?>/img/drag_handle.gif" alt="Sortieren" class="drag_handle" style="display:none;"/>
 
       <noscript>
 

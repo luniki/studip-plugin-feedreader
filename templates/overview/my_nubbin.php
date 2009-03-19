@@ -1,7 +1,7 @@
 <ul>
   <li class="feed_reader_delete">
     <a href="#">
-      <?= Assets::img('trash.gif', array('alt' => 'Löschen', 'size' => '11@11')) ?>
+      <img src="<?= $plugin->getPluginURL() ?>/img/trash.gif" alt="Löschen"/>
     </a>
   </li>
 
@@ -13,7 +13,7 @@
 
   <li class="feed_reader_drag">
     <a href="#">
-      <?= Assets::img('drag_handle.gif', array('alt' => 'Sortieren', 'class' => 'drag_handle')) ?>
+      <img src="<?= $plugin->getPluginURL() ?>/img/drag_handle.gif" alt="Sortieren" class="drag_handle"/>
     </a>
   </li>
 </ul>
