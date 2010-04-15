@@ -78,7 +78,7 @@ class FeedReaderPortal extends AbstractStudIPPortalPlugin {
    *                return NULL otherwise
    */
   function getAdminLink() {
-    return PluginEngine::getLink($this);
+    return PluginEngine::getLink("feedreader");
   }
 
   /**
