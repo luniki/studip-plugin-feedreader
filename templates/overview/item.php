@@ -11,7 +11,7 @@
   <? $enclosure = $item->get_enclosure(); ?>
   <? if ($enclosure && $enclosure->get_link()) : ?>
     <a href="<?= htmlReady($enclosure->get_link()) ?>" target="_blank">
-      <?= Assets::img("podcast_icon.gif", array("align" => "absmiddle")) ?>
+      <?= Assets::img("icons/16/grey/link-extern", array("align" => "absmiddle")) ?>
     </a>
   <? endif ?>
 </div>

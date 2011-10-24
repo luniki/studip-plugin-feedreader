@@ -10,11 +10,4 @@
       <span>Editieren</span>
     </a>
   </li>
-
-  <li class="feed_reader_drag">
-    <a href="#">
-      <img src="<?= $plugin->getPluginURL() ?>/img/drag_handle.gif" alt="Sortieren" class="drag_handle"/>
-    </a>
-  </li>
 </ul>
-
