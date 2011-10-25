@@ -14,8 +14,16 @@
   <? foreach ($feeds as $feed) : ?>
     <li id="feed_reader_list_feed_<?= $feed->id ?>">
 
+      <a href="<?= PluginEngine::getLink($plugin, array('feed_id' => $feed->id), 'visibility') ?>">
+          <? if ($feed->visibility) { ?>
+                <?= Assets::img('icons/16/grey/visibility-visible', array("title" => "Newsfeed ist für alle sichtbar. Klicken Sie, um ihn zu verstecken!")) ?>
+          <? } else { ?>
+                <?= Assets::img('icons/16/grey/visibility-invisible', array("title" => "Newsfeed ist nur für Sie sichtbar. Klicken Sie, um ihn für alle sichtbar zu machen!")) ?>
+          <? } ?>
+      </a>
+
       <a href="<?= PluginEngine::getLink($plugin, array('feed_id' => $feed->id), 'delete') ?>">
-        <img src="<?= $plugin->getPluginURL() ?>/img/trash.gif" alt="Löschen">
+          <?= Assets::img('icons/16/grey/trash') ?>
       </a>
 
       <a href="<?= PluginEngine::getLink($plugin, array('feed_id' => $feed->id), 'edit') ?>">

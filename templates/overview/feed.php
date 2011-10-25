@@ -13,7 +13,7 @@
             </a>
         <? endif ?>
 
-        <div style="display: none; opacity: 0;" class="feed_reader_nubbin">
+        <div class="feed_reader_nubbin">
                 <? if ($plugin->is_authorized()) : ?>
                     <?= $this->render_partial('overview/my_nubbin', compact($feed)) ?>
                 <? else : ?>

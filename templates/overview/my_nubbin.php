@@ -1,7 +1,7 @@
 <ul>
   <li class="feed_reader_delete">
     <a href="#">
-      <img src="<?= $plugin->getPluginURL() ?>/img/trash.gif" alt="Löschen"/>
+      <?= Assets::img('icons/16/grey/trash') ?>
     </a>
   </li>
 

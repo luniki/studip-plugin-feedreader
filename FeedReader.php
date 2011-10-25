@@ -273,6 +273,32 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         echo $this->showList($message);
     }
 
+    function visibility_action()
+    {
+        $this->has_to_be_authorized();
+        Navigation::activateItem('/profile/feed_reader');
+
+        if (!isset($_REQUEST['feed_id']) || '' === $_REQUEST['feed_id']) {
+            echo $this->showList();
+            return;
+        }
+
+        $id = (int) $_REQUEST['feed_id'];
+        $feed = FeedReader_Feed::find($id);
+
+        if (is_null($feed) || $feed->user_id !== $GLOBALS['auth']->auth['uid']) {
+            echo $this->showList('No such feed');
+            return;
+        }
+
+        $feed->visibility = $feed->visibility ? false : true;
+        $message = $feed->save()
+            ? 'Sichtbarkeit des Newsfeeds wurde geändert.'
+            : 'Sichtbarkeit des Newsfeeds konnte nicht geändert werden.';
+
+        echo $this->showList($message);
+        return;
+    }
 
     function get_simplepie_from_user_feed($user_feed)
     {
@@ -319,7 +345,6 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
     function getHomepageTemplate($user_id)
     {
         $feeds = $this->getFeeds($user_id);
-        $feeds = null;
         return (sizeof($feeds) || $this->is_authorized())
             ? $this->getFeedsTemplate($feeds)
             : NULL;
@@ -355,7 +380,9 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
     {
         $feeds = array();
         foreach (FeedReader_Feed::find_all($user_id) as $f) {
-            $feeds[] = FeedReader::get_simplepie_from_user_feed($f);
+            if ($f->is_visible($GLOBALS['auth']->auth['uid'])) {
+                $feeds[] = FeedReader::get_simplepie_from_user_feed($f);
+            }
         }
         return $feeds;
     }

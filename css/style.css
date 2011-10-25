@@ -50,11 +50,6 @@
   line-height: 3em;
 }
 
-.feed_reader_feed:hover .feed_reader_nubbin {
-  display: inline !important;
-  opacity: 1 !important;
-}
-
 .feed_reader_item_snippet,
 .feed_reader_item_title {
   -webkit-transition: color 500ms ease;
@@ -90,6 +85,15 @@
   opacity: 0;
   padding-left: 0.5em;
   font-family: Verdana, sans-serif;
+}
+
+.feed_reader_feed:hover .feed_reader_nubbin {
+  display: inline;
+  opacity: 1;
+}
+
+.feed_reader_nubbin img {
+  vertical-align: middle;
 }
 
 .feed_reader_nubbin ul, .feed_reader_nubbin li {
