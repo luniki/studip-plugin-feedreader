@@ -50,10 +50,10 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         }
 
         $this->factory = new Flexi_TemplateFactory(dirname(__FILE__).'/templates');
-        $this->user_id = $GLOBALS['auth']->auth['uid'];
 
         PageLayout::addStylesheet($this->getPluginUrl() . '/css/style.css');
         PageLayout::addScript($this->getPluginUrl() . '/js/feedreader.js');
+
     }
 
     function is_authorized()
@@ -220,7 +220,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
             exit;
         }
 
-        if (!FeedReader_Feed::sort($this->user_id,
+        if (!FeedReader_Feed::sort($GLOBALS['auth']->auth['uid'],
                                    $_REQUEST['feeds'])) {
             header('HTTP/1.1 404 Not found', TRUE, 404);
             var_dump($this->error);
@@ -318,8 +318,11 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
      */
     function getHomepageTemplate($user_id)
     {
-        $this->user_id = $user_id;
-        return $this->getFeedsTemplate();
+        $feeds = $this->getFeeds($user_id);
+        $feeds = null;
+        return (sizeof($feeds) || $this->is_authorized())
+            ? $this->getFeedsTemplate($feeds)
+            : NULL;
     }
 
     /**
@@ -339,18 +342,27 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
      */
     function getPortalTemplate()
     {
-        $this->user_id = $GLOBALS['auth']->auth['uid'];
-        return $this->getFeedsTemplate();
+        $feeds = $this->getFeeds($GLOBALS['auth']->auth['uid']);
+
+        return (sizeof($feeds) || $this->is_authorized())
+            ? $this->getFeedsTemplate($feeds)
+            : NULL;
+
+        return $this->getFeedsTemplate($GLOBALS['auth']->auth['uid']);
+    }
+
+    function getFeeds($user_id)
+    {
+        $feeds = array();
+        foreach (FeedReader_Feed::find_all($user_id) as $f) {
+            $feeds[] = FeedReader::get_simplepie_from_user_feed($f);
+        }
+        return $feeds;
     }
 
 
-    function getFeedsTemplate()
+    function getFeedsTemplate($feeds)
     {
-        $feeds = array();
-        foreach (FeedReader_Feed::find_all($this->user_id) as $f) {
-            $feeds[] = FeedReader::get_simplepie_from_user_feed($f);
-        }
-
         $limit = 5;
         $plugin = $this;
 

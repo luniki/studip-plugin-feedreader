@@ -1,14 +1,14 @@
 <? if (isset($message) && strlen($message)) : ?>
-  <div class="feed_reader_message"><?= $message ?></div>
+    <div class="feed_reader_message"><?= htmlReady($message) ?></div>
 <? endif ?>
 
 <div class="feed_reader_subscription_bar">
   <?= $this->render_partial('_subscribe') ?>
 </div>
 
-<h3>Deine Newsfeeds</h3>
 
 <? if (sizeof($feeds)) : ?>
+  <h3>Ihre Newsfeeds</h3>
   <ul id="feed_reader_list">
   <? $index = 0; $len = sizeof($feeds); ?>
   <? foreach ($feeds as $feed) : ?>
@@ -48,10 +48,13 @@
 
       </span>
 
-      <?= $feed->url ?>
+      <?= htmlReady($feed->url) ?>
     </li>
   <? endforeach ?>
   </ul>
+
+<? else: ?>
+   <?= $this->render_partial("blank_slate") ?>
 <? endif ?>
 
 <script type="text/javascript">

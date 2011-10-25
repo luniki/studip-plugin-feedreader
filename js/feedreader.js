@@ -1,8 +1,8 @@
 jQuery(function ($) {
-    
+
     var $feeds = $("#feed_reader_feeds"),
         urltmpl = _.template($feeds.attr("data-url"));
-    
+
     var showNubbin = function (feed) {
         var $feed = $(feed),
             nubbin = $feed.find('.feed_reader_nubbin');
@@ -11,12 +11,12 @@ jQuery(function ($) {
             nubbin.show().animate({opacity: 1}, 200);
         }
     };
-    
+
     var deleteFeed = function (anchor) {
         if (confirm('Diesen Newsfeed wirklich löschen?')) {
             var feed = $(anchor).parents(".feed_reader_feed");
             $.post(
-                urltmpl({action: "delete"}), 
+                urltmpl({action: "delete"}),
                 {
                     feed_id: _.last(feed.attr("id").split("_"))
                 }
@@ -25,11 +25,13 @@ jQuery(function ($) {
             });
         }
     };
-    
+
     $feeds
-        .delegate(".feed_reader_feed_header", "mouseenter", function (event) {
+        /*
+        .delegate(".feed_reader_feed", "mouseenter", function (event) {
             showNubbin(this);
         })
+*/
         .delegate(".feed_reader_delete > a", "click", function (event) {
             deleteFeed(this);
             return false;

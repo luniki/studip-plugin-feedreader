@@ -1,12 +1,17 @@
 <div id="feed_reader_feed_id_<?= $feed->id ?>" class="feed_reader_feed<?= $last ? ' last' : '' ?>">
 
-  <? if ($feed->get_title()) : ?>
-
-     <div class="feed_reader_feed_header">
-        <a target="_blank" class="feed_reader_feed_title" href="<?= $feed->get_permalink() ?>">
-            <span class="favicon" style="background-image: url(<?= $feed->get_favicon() ?>)"></span>
-            <?= $feed->get_title() ?>
-        </a>
+    <div class="feed_reader_feed_header">
+        <? if ($feed->get_title()) : ?>
+            <a target="_blank" class="feed_reader_feed_title" href="<?= $feed->get_permalink() ?>">
+                <span class="favicon" style="background-image: url(<?= $feed->get_favicon() ?>)"></span>
+                <?= $feed->get_title() ?>
+            </a>
+        <? else : ?>
+            <a target="_blank" class="feed_reader_feed_title feed_reader_error" href="#">
+                <span class="favicon" style="background-image: url(<?= Assets::image_path('icons/16/red/exclaim.png') ?>)"></span>
+                Fehler
+            </a>
+        <? endif ?>
 
         <div style="display: none; opacity: 0;" class="feed_reader_nubbin">
                 <? if ($plugin->is_authorized()) : ?>
@@ -17,11 +22,14 @@
         </div>
     </div>
 
-    <?= $this->render_partial_collection('overview/item', $feed->get_items(0, $limit)) ?>
+    <? if (sizeof($items = $feed->get_items(0, $limit))) : ?>
+        <?= $this->render_partial_collection('overview/item', $feed->get_items(0, $limit)) ?>
+    <? elseif ($feed->get_title()) : ?>
+        <div class="feed_reader_item"> Der Newsfeed enthält keine Artikel. </div>
+    <? else : ?>
+        <div class="feed_reader_item">
+            Der Newsfeed <a target="_blank" href="<?= htmlReady($feed->feed_url) ?>"><?= htmlReady($feed->feed_url) ?></a> ist fehlerhaft.
+        </div>
+    <? endif ?>
 
-  <? else : ?>
-
-TODO: could not find: <? var_dump($feed->feed_url) ?>
-
-  <? endif ?>
 </div>
