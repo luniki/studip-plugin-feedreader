@@ -1,5 +1,4 @@
 pluginclassname=FeedReader
-pluginclassname=FeedReaderPortal
 pluginname=FeedReader
 origin=virtUOS
-version=1.2
+version=1.4.0
