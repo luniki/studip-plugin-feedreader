@@ -304,7 +304,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
     {
 
         if (!class_exists('SimplePie'))
-            require_once dirname(__FILE__) . '/vendor/SimplePie 1.1.3/simplepie.inc';
+            require_once dirname(__FILE__) . '/vendor/SimplePie 1.2.1/simplepie.inc';
 
         $feed = new SimplePie($user_feed->url, $GLOBALS['TMP_PATH']);
         $feed->set_output_encoding('ISO-8859-1');
