@@ -34,9 +34,7 @@ require_once 'models/feed.php';
 class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 {
 
-
     public $factory;
-
 
     function __construct()
     {
@@ -53,7 +51,6 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
         PageLayout::addStylesheet($this->getPluginUrl() . '/css/style.css');
         PageLayout::addScript($this->getPluginUrl() . '/js/feedreader.js');
-
     }
 
     function is_authorized()
@@ -86,6 +83,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
     function show_action()
     {
+        Navigation::activateItem('/profile/feed_reader');
         echo $this->showList();
     }
 
@@ -171,6 +169,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
     {
 
         $this->has_to_be_authorized();
+        Navigation::activateItem('/profile/feed_reader');
 
         if (isset($_REQUEST['feed_id']) && '' !== $_REQUEST['feed_id']) {
             $feed = FeedReader_Feed::find($_REQUEST['feed_id']);
@@ -178,8 +177,6 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
         # AJAX
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-
-            ob_end_clean();
 
             header('Content-Type: text/javascript');
 
@@ -194,8 +191,6 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
                                                 'success' => $feed->delete()),
                                             $GLOBALS['template_factory']->open('layouts/base_without_infobox'));
             }
-
-            ob_start(create_function('', 'return "";'));
         }
 
         # NON AJAX
@@ -220,6 +215,8 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
             exit;
         }
 
+        Navigation::activateItem('/profile/feed_reader');
+
         if (!FeedReader_Feed::sort($GLOBALS['auth']->auth['uid'],
                                    $_REQUEST['feeds'])) {
             header('HTTP/1.1 404 Not found', TRUE, 404);
@@ -233,6 +230,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
     {
 
         $this->has_to_be_authorized();
+        Navigation::activateItem('/profile/feed_reader');
 
         if (!isset($_POST['feed_id']) || '' === $_POST['feed_id']) {
             echo $this->showList();
@@ -255,6 +253,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
     function down_action()
     {
         $this->has_to_be_authorized();
+        Navigation::activateItem('/profile/feed_reader');
 
         if (!isset($_POST['feed_id']) || '' === $_POST['feed_id']) {
             echo $this->showList();

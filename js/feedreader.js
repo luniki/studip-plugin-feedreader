@@ -1,7 +1,13 @@
 jQuery(function ($) {
 
-    var $feeds = $("#feed_reader_feeds"),
-        urltmpl = _.template($feeds.attr("data-url"));
+    var $feeds = $("#feed_reader_feeds");
+    
+    if (!$feeds.length) {
+        return;
+    }
+    
+        
+    var urltmpl = _.template($feeds.attr("data-url"));
 
     var showNubbin = function (feed) {
         var $feed = $(feed),

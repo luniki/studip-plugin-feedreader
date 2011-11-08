@@ -196,16 +196,23 @@ blockquote .feed_reader_subscription_bar, blockquote #feed_reader_feeds {
   color: red;
 }
 
-.feed_reader_blank_slate {
-  margin: 3em;
-  padding: 1.5em;
-  border-top: 2px solid #FFD324;
-  border-bottom: 2px solid #FFD324;
-  background: #FFF6BF;
-  text-align: center;
+#feed_reader_subscription_form input.highlight {
+  background-color: #fcc;
 }
 
-.feed_reader_blank_slate p {
-  color: #817134;
-  font-size: 1.5em;
+.feed_reader_textfield {
+  border-bottom: 1px dotted #888;
+}
+
+.feed_reader_blank_slate .ui-accordion-content {
+  padding: 1em;
+  border: 1px solid #ccc;
+  border-top: none;
+  -webkit-border-bottom-right-radius: 1em;
+  -webkit-border-bottom-left-radius: 1em;
+  -moz-border-radius-bottomright: 1em;
+  -moz-border-radius-bottomleft: 1em;
+  border-bottom-right-radius: 1em;
+  border-bottom-left-radius: 1em;
+
 }

@@ -15,9 +15,9 @@
 
         <div class="feed_reader_nubbin">
                 <? if ($plugin->is_authorized()) : ?>
-                    <?= $this->render_partial('overview/my_nubbin', compact($feed)) ?>
+                    <?= $this->render_partial('overview/my_nubbin') ?>
                 <? else : ?>
-                    <?= $this->render_partial('overview/other_nubbin', compact($feed)) ?>
+                    <?= $this->render_partial('overview/other_nubbin') ?>
                 <? endif ?>
         </div>
     </div>
