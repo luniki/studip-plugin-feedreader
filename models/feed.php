@@ -187,7 +187,6 @@ class FeedReader_Feed
                        $this->user_id, $this->url, $this->position, $this->visibility ? 'TRUE' : 'FALSE', $this->id);
 
         $db = new DB_Seminar();
-        var_dump($sql);
         $db->query($sql);
 
         return !$db->Errno;
