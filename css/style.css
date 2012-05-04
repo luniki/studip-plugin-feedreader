@@ -196,6 +196,10 @@ blockquote .feed_reader_subscription_bar, blockquote #feed_reader_feeds {
   color: red;
 }
 
+#feed_reader_subscription_form {
+  margin: 0;
+}
+
 #feed_reader_subscription_form input.highlight {
   background-color: #fcc;
 }

@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c)  2007 - Marcus Lunzenauer <mlunzena@uos.de>
+# Copyright (c)  2011 - Marcus Lunzenauer <mlunzena@uos.de>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 
+require_once 'vendor/trails/trails.php';
 require_once 'models/feed.php';
 
 
@@ -34,20 +35,9 @@ require_once 'models/feed.php';
 class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 {
 
-    public $factory;
-
     function __construct()
     {
-
         parent::__construct();
-
-        if (Navigation::hasItem('/profile')) {
-            Navigation::addItem('/profile/feed_reader',
-                                new AutoNavigation('Feed Reader',
-                                                   PluginEngine::getUrl($this, null, "")));
-        }
-
-        $this->factory = new Flexi_TemplateFactory(dirname(__FILE__).'/templates');
 
         PageLayout::addStylesheet($this->getPluginUrl() . '/css/style.css');
         PageLayout::addScript($this->getPluginUrl() . '/js/feedreader.js');
@@ -55,10 +45,8 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
     function is_authorized()
     {
-        $name = Request::quoted('username');
-        $id = $name ? get_userid($name) : $GLOBALS['auth']->auth['uid'];
-
-        return $id === $GLOBALS['auth']->auth['uid'];
+        global $auth;
+        return $this->user_id === $auth->auth['uid'];
     }
 
     function has_to_be_authorized()
@@ -66,237 +54,6 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         if (!$this->is_authorized()) {
             throw new Exception('Access denied.');
         }
-    }
-
-    function showList($message = '')
-    {
-        return $this->factory->render('show',
-                                      array(
-                                          'feeds'   => FeedReader_Feed::find_all($GLOBALS['auth']->auth['uid']),
-                                          'message' => $message,
-                                          'plugin'  => $this
-                                      ),
-                                      $GLOBALS['template_factory']->open('layouts/base_without_infobox')
-        );
-    }
-
-
-    function show_action()
-    {
-        Navigation::activateItem('/profile/feed_reader');
-        echo $this->showList();
-    }
-
-
-    function insert_action()
-    {
-        $this->has_to_be_authorized();
-        Navigation::activateItem('/profile/feed_reader');
-
-        $message = '';
-
-        if (isset($_REQUEST['url']) && '' !== $_REQUEST['url']) {
-            $feed = new FeedReader_Feed();
-            $feed->user_id = $GLOBALS['auth']->auth['uid'];
-            $feed->url = $_REQUEST['url'];
-
-            $pie = @$this->get_simplepie_from_user_feed($feed);
-            $error = $pie->error();
-
-            if ($error) {
-                $message = 'Newsfeed konnte nicht abonniert werden. (' . $error . ')';
-            }
-            else {
-                $message = $feed->save()
-                    ? 'Newsfeed abonniert.' : 'Newsfeed konnte nicht abonniert werden.';
-            }
-        }
-
-        echo $this->showList($message);
-    }
-
-
-    function edit_action()
-    {
-
-        $this->has_to_be_authorized();
-        Navigation::activateItem('/profile/feed_reader');
-
-        if (!isset($_REQUEST['feed_id']) || '' === $_REQUEST['feed_id']) {
-            echo $this->showList();
-            return;
-        }
-
-        $plugin = $this;
-
-        $id = (int) $_REQUEST['feed_id'];
-        $feed = FeedReader_Feed::find($id);
-
-        if (is_null($feed) || $feed->user_id !== $GLOBALS['auth']->auth['uid']) {
-            echo $this->showList('No such feed');
-            return;
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            $feed->url = $_POST['url'];
-
-            $pie = $this->get_simplepie_from_user_feed($feed);
-            $error = $pie->error();
-
-            if ($error) {
-                $message = $error;
-            }
-            else {
-                $message = $feed->save()
-                    ? 'Newsfeed wurde geändert.'
-                    : 'Newsfeed konnte nicht geändert werden.';
-            }
-
-            echo $this->showList($message);
-            return;
-        }
-
-        else {
-            echo $this->factory->render('edit',
-                                        compact('feed', 'plugin'),
-                                        $GLOBALS['template_factory']->open('layouts/base_without_infobox'));
-        }
-    }
-
-
-    function delete_action()
-    {
-
-        $this->has_to_be_authorized();
-        Navigation::activateItem('/profile/feed_reader');
-
-        if (isset($_REQUEST['feed_id']) && '' !== $_REQUEST['feed_id']) {
-            $feed = FeedReader_Feed::find($_REQUEST['feed_id']);
-        }
-
-        # AJAX
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-
-            header('Content-Type: text/javascript');
-
-            if (is_null($feed)) {
-                header('HTTP/1.1 404 Not found', TRUE, 404);
-            }
-            else {
-                echo $this->factory->render('delete',
-                                            array(
-                                                'plugin'  => $this,
-                                                'feed'    => $feed,
-                                                'success' => $feed->delete()),
-                                            $GLOBALS['template_factory']->open('layouts/base_without_infobox'));
-            }
-        }
-
-        # NON AJAX
-        else {
-
-            if (is_null($feed))
-                $message = 'Newsfeed existiert nicht.';
-            else if ($feed->delete())
-                $message = "Newsfeed wurde gelöscht.";
-            else
-                $message = "Newsfeed konnte nicht gelöscht werden.";
-
-            echo $this->showList($message);
-        }
-    }
-
-
-    function sort_action()
-    {
-        if (!$this->is_authorized()) {
-            header('HTTP/1.1 403 Forbidden', TRUE, 403);
-            exit;
-        }
-
-        Navigation::activateItem('/profile/feed_reader');
-
-        if (!FeedReader_Feed::sort($GLOBALS['auth']->auth['uid'],
-                                   $_REQUEST['feeds'])) {
-            header('HTTP/1.1 404 Not found', TRUE, 404);
-            var_dump($this->error);
-            exit;
-        }
-    }
-
-
-    function up_action()
-    {
-
-        $this->has_to_be_authorized();
-        Navigation::activateItem('/profile/feed_reader');
-
-        if (!isset($_POST['feed_id']) || '' === $_POST['feed_id']) {
-            echo $this->showList();
-            return;
-        }
-
-        $feed_id = (int) $_POST['feed_id'];
-
-        $message = '';
-        try {
-            FeedReader_Feed::sort_up($GLOBALS['auth']->auth['uid'], $feed_id);
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-        }
-
-        echo $this->showList($message);
-    }
-
-
-    function down_action()
-    {
-        $this->has_to_be_authorized();
-        Navigation::activateItem('/profile/feed_reader');
-
-        if (!isset($_POST['feed_id']) || '' === $_POST['feed_id']) {
-            echo $this->showList();
-            return;
-        }
-
-        $feed_id = (int) $_POST['feed_id'];
-
-        $message = '';
-        try {
-            FeedReader_Feed::sort_down($GLOBALS['auth']->auth['uid'], $feed_id);
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-        }
-
-        echo $this->showList($message);
-    }
-
-    function visibility_action()
-    {
-        $this->has_to_be_authorized();
-        Navigation::activateItem('/profile/feed_reader');
-
-        if (!isset($_REQUEST['feed_id']) || '' === $_REQUEST['feed_id']) {
-            echo $this->showList();
-            return;
-        }
-
-        $id = (int) $_REQUEST['feed_id'];
-        $feed = FeedReader_Feed::find($id);
-
-        if (is_null($feed) || $feed->user_id !== $GLOBALS['auth']->auth['uid']) {
-            echo $this->showList('No such feed');
-            return;
-        }
-
-        $feed->visibility = $feed->visibility ? false : true;
-        $message = $feed->save()
-            ? 'Sichtbarkeit des Newsfeeds wurde geändert.'
-            : 'Sichtbarkeit des Newsfeeds konnte nicht geändert werden.';
-
-        echo $this->showList($message);
-        return;
     }
 
     function get_simplepie_from_user_feed($user_feed)
@@ -313,7 +70,6 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
         return $feed;
     }
-
 
     function shortdesc($string, $length)
     {
@@ -343,10 +99,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
      */
     function getHomepageTemplate($user_id)
     {
-        $feeds = $this->getFeeds($user_id);
-        return (sizeof($feeds) || $this->is_authorized())
-            ? $this->getFeedsTemplate($feeds)
-            : NULL;
+        return $this->performBox($user_id);
     }
 
     /**
@@ -366,35 +119,131 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
      */
     function getPortalTemplate()
     {
-        $feeds = $this->getFeeds($GLOBALS['auth']->auth['uid']);
+        $name = Request::quoted('username');
+        $user_id = $name ? get_userid($name) : $GLOBALS['auth']->auth['uid'];
 
-        return (sizeof($feeds) || $this->is_authorized())
-            ? $this->getFeedsTemplate($feeds)
-            : NULL;
-
-        return $this->getFeedsTemplate($GLOBALS['auth']->auth['uid']);
+        return $this->performBox($user_id);
     }
 
-    function getFeeds($user_id)
+    /**
+     * This method dispatches all actions.
+     *
+     * @param string   part of the dispatch path that was not consumed
+     */
+    function perform($unconsumed_path)
     {
-        $feeds = array();
-        foreach (FeedReader_Feed::find_all($user_id) as $f) {
-            if ($f->is_visible($GLOBALS['auth']->auth['uid'])) {
-                $feeds[] = FeedReader::get_simplepie_from_user_feed($f);
-            }
+        # TODO mlunzena: this is wrong
+        $this->user_id = $GLOBALS['auth']->auth['uid'];
+
+        $response = $this->_perform($unconsumed_path);
+        echo $response->body;
+    }
+
+    function performBox($user_id)
+    {
+        # TODO mlunzena: context auf diese Weise?
+        $this->user_id = $user_id;
+
+        $response = $this->_perform(preg_replace(':[^\w\/]:', '',
+                                                 Request::get("fr")));
+
+        # The controller wants to redirect or got an code.
+        if ($response->status >= 300) {
+            # TODO what to do?
         }
-        return $feeds;
+
+        # if the response's body is empty, do not show the plugin's box
+        if ($response->body === '') {
+            return NULL;
+        }
+
+
+        # prepare magic attributes
+        $title = _("Feed Reader");
+        $icon_url = Assets::image_path("icons/16/white/rss");
+        if ($this->is_authorized()) {
+            $admin_url = URLHelper::getURL('', array('fr' => 'subscriptions'));
+            $admin_title = 'Feed-Reader-Verwaltung';
+        }
+
+        return new StringTemplate($response->body,
+                                  compact(words('title icon_url admin_url admin_title')));
     }
 
-
-    function getFeedsTemplate($feeds)
+    function _perform($unconsumed_path)
     {
-        $limit = 5;
-        $plugin = $this;
+        global $ABSOLUTE_PATH_STUDIP;
+        $trails_root = $ABSOLUTE_PATH_STUDIP . $this->getPluginPath();
+        $dispatcher = new FeedReader_Dispatcher($trails_root, NULL, 'feeds');
+        $dispatcher->plugin = $this;
+        return $dispatcher->dispatch($unconsumed_path);
+    }
+}
 
-        $tmpl = $this->factory->open('overview/feeds');
-        $tmpl->set_attributes(compact('feeds', 'limit', 'plugin'));
 
-        return $tmpl;
+class StringTemplate extends Flexi_Template
+{
+
+    public $_content;
+
+    function __construct($content, $attributes = array())
+    {
+        global $template_factory;
+
+        $this->_content = $content;
+        $this->set_attributes($attributes);
+        $this->_factory = $template_factory;
+    }
+
+    function _render()
+    {
+        return $this->_layout
+            ? $this->_layout->render($this->get_attributes() + array('content_for_layout' => $this->_content))
+            : $this->_content;
+    }
+}
+
+
+class FeedReader_Dispatcher extends Trails_Dispatcher
+{
+
+    function dispatch($uri) {
+
+        # E_USER_ERROR|E_USER_WARNING|E_USER_NOTICE|E_RECOVERABLE_ERROR = 5888
+        $old_handler = set_error_handler(array($this, 'error_handler'), 5888);
+
+        ob_start();
+        $level = ob_get_level();
+
+        $response = $this->map_uri_to_response($this->clean_request_uri((string) $uri));
+
+        while (ob_get_level() >= $level) {
+            ob_end_flush();
+        }
+
+        if (isset($old_handler)) {
+            set_error_handler($old_handler);
+        }
+        return $response;
+    }
+}
+
+class FeedReader_Controller extends Trails_Controller
+{
+
+    function before_filter(&$action, &$args)
+    {
+        $this->plugin = $this->dispatcher->plugin;
+    }
+
+    function url_for($to/*, ...*/)
+    {
+
+        # urlencode all but the first argument
+        $args = func_get_args();
+        $args = array_map('urlencode', $args);
+        $args[0] = $to;
+
+        return URLHelper::getURL('', array('fr' => join('/', $args)));
     }
 }

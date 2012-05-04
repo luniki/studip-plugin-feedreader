@@ -241,11 +241,10 @@ class FeedReader_Feed
 
         $diff = array_diff($order, array_keys($feeds));
 
+        # $order und $feeds do not match
         if (!empty($diff)) {
-            # TODO (mlunzena) error gibt's doch gar nicht
-            $error = 'different size';
-            var_dump($this->error);
-            exit;
+            # TODO (mlunzena) Muss der caller wissen, dass
+            #                 es diese Inkonsistenz gibt?
             return FALSE;
         }
 
@@ -253,8 +252,8 @@ class FeedReader_Feed
         foreach ($order as $feed_id) {
             $feeds[$feed_id]->position = $i++;
             if (!$feeds[$feed_id]->save()) {
-                # TODO (mlunzena) error gibt's doch gar nicht
-                $error = var_export($feeds[$feed_id], 1) . ' konnte nicht gespeichert werden.';
+                # TODO (mlunzena) Muss der caller wissen, ob und was nicht
+                #                 gespeichert werden konnte?
                 return FALSE;
             }
         }
