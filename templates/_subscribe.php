@@ -2,5 +2,5 @@
   <label>Newsfeed abbonieren:
   <input type="text" name="url" />
   </label>
-  <input type="submit" value="Go" />
+  <input type="submit" value="<?= _("Hinzufügen")?>" />
 </form>
