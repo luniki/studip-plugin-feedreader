@@ -209,3 +209,12 @@ blockquote .feed_reader_subscription_bar, blockquote #feed_reader_feeds {
   color: #817134;
   font-size: 1.5em;
 }
+
+.feed_reader_no_feeds {
+  margin: 0.5em;
+  padding: 0.5em;
+  border-top: 1px solid #FFD324;
+  border-bottom: 1px solid #FFD324;
+  background: #FFF6BF;
+  color: #817134;
+}

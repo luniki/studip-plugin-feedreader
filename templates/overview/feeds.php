@@ -26,5 +26,17 @@ if ($plugin->is_authorized()) {
       <? } ?>
   </div>
 <? } elseif ($plugin->is_authorized()) { ?>
-   <?= $this->render_partial("blank_slate") ?>
+
+  <div class="feed_reader_no_feeds">
+  <p>
+    Sie haben derzeit noch keine Newsfeeds abboniert.
+    <br>
+    Sobald Sie einen oder mehrere Newsfeed abboniert haben, können Sie und Ihre
+    Gäste diese Newsfeeds auf Ihrer <a href="<?= URLHelper::getLink("about.php") ?>">Stud.IP-Homepage</a> lesen.
+
+    Außerdem erhalten Sie Ihre Newsfeeds auch auf ihrer
+    <a href="<?= URLHelper::getLink("index.php") ?>">Stud.IP-Startseite</a>.
+  </p>
+  </div>
+
 <? } ?>
