@@ -66,14 +66,17 @@
 <? endif ?>
 
 <script type="text/javascript">
-
-  Sortable.create("feed_reader_list", {
-    handle: "drag_handle",
-    constraint: "vertical",
-    onUpdate: function() {
-      new Ajax.Request("<?= PluginEngine::getLink($plugin, array(), 'sort') ?>",
-        { parameters: Sortable.serialize("feed_reader_list", { name: 'feeds' }) });
+jQuery("#feed_reader_list").sortable({
+    axis: 'y'
+    , handle: '.drag_handle'
+    , update:
+    function(event, ui) {
+        var sorted = $("#feed_reader_list").sortable("toArray");
+        var order = _.map($("#feed_reader_list").sortable("toArray"),
+                          function (item) {
+                              return item.match(/_(\d+)$/)[1];
+                          });
+        $.post("<?= PluginEngine::getLink($plugin, array(), 'sort') ?>", {feeds: order});
     }
-  });
+});
 </script>
-
