@@ -201,6 +201,8 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         # NON AJAX
         else {
 
+            Navigation::activateItem('/profile/feed_reader');
+
             if (is_null($feed))
                 $message = 'Newsfeed existiert nicht.';
             else if ($feed->delete())
