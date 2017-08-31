@@ -1,9 +1,10 @@
 <?php
 
-class CreateFeedTable extends DBMigration {
-
-  function up() {
-    $sql = <<<SQL
+class CreateFeedTable extends Migration
+{
+    public function up()
+    {
+        $sql = <<<SQL
   CREATE TABLE feed_reader_feeds (
     id int(10) unsigned NOT NULL auto_increment,
     user_id varchar(32) NOT NULL,
@@ -12,11 +13,11 @@ class CreateFeedTable extends DBMigration {
     PRIMARY KEY  (id)
   );
 SQL;
-    $this->db->query($sql);
+        \DBManager::get()->query($sql);
+    }
 
-  }
-
-  function down() {
-    $this->db->query('DROP TABLE IF EXISTS feed_reader_feeds');
-  }
+    public function down()
+    {
+        \DBManager::get()->query('DROP TABLE IF EXISTS feed_reader_feeds');
+    }
 }

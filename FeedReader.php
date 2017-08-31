@@ -1,62 +1,52 @@
 <?php
 
-# Copyright (c)  2007 - Marcus Lunzenauer <mlunzena@uos.de>
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
+// Copyright (c)  2007 - Marcus Lunzenauer <mlunzena@uos.de>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 require_once 'models/feed.php';
 
-
 /**
- * TODO
- *
  * @author    mlunzena
  * @copyright (c) Authors
  */
-
 class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 {
-
-
     public $factory;
 
-
-    function __construct()
+    public function __construct()
     {
-
         parent::__construct();
 
         if (Navigation::hasItem('/profile') && $this->is_authorized()) {
             Navigation::addItem('/profile/feed_reader',
                                 new AutoNavigation('Feed Reader',
-                                                   PluginEngine::getUrl($this, null, "")));
+                                                   PluginEngine::getUrl($this, null, '')));
         }
 
         $this->factory = new Flexi_TemplateFactory(dirname(__FILE__).'/templates');
 
-        PageLayout::addStylesheet($this->getPluginUrl() . '/css/style.css');
-        PageLayout::addScript($this->getPluginUrl() . '/js/feedreader.js');
-
+        PageLayout::addStylesheet($this->getPluginUrl().'/css/style.css');
+        PageLayout::addScript($this->getPluginUrl().'/js/feedreader.js');
     }
 
-    function is_authorized()
+    public function is_authorized()
     {
         $name = Request::quoted('username');
         $id = $name ? get_userid($name) : $GLOBALS['auth']->auth['uid'];
@@ -64,33 +54,31 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         return $id === $GLOBALS['auth']->auth['uid'];
     }
 
-    function has_to_be_authorized()
+    public function has_to_be_authorized()
     {
         if (!$this->is_authorized()) {
             throw new Exception('Access denied.');
         }
     }
 
-    function showList($message = '')
+    public function showList($message = '')
     {
         return $this->factory->render('show',
                                       array(
-                                          'feeds'   => FeedReader_Feed::find_all($GLOBALS['auth']->auth['uid']),
+                                          'feeds' => FeedReader_Feed::find_all($GLOBALS['auth']->auth['uid']),
                                           'message' => $message,
-                                          'plugin'  => $this
+                                          'plugin' => $this,
                                       ),
-                                      $GLOBALS['template_factory']->open('layouts/base_without_infobox')
+                                      $GLOBALS['template_factory']->open('layouts/base')
         );
     }
 
-
-    function show_action()
+    public function show_action()
     {
         echo $this->showList();
     }
 
-
-    function insert_action()
+    public function insert_action()
     {
         $this->has_to_be_authorized();
         Navigation::activateItem('/profile/feed_reader');
@@ -106,26 +94,24 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
             $error = $pie->error();
 
             if ($error) {
-                $message = 'Newsfeed konnte nicht abonniert werden. (' . $error . ')';
-            }
-            else {
+                $message = 'Newsfeed konnte nicht abonniert werden. ('.$error.')';
+            } else {
                 $message = $feed->save()
-                    ? 'Newsfeed abonniert.' : 'Newsfeed konnte nicht abonniert werden.';
+                         ? 'Newsfeed abonniert.' : 'Newsfeed konnte nicht abonniert werden.';
             }
         }
 
         echo $this->showList($message);
     }
 
-
-    function edit_action()
+    public function edit_action()
     {
-
         $this->has_to_be_authorized();
         Navigation::activateItem('/profile/feed_reader');
 
         if (!isset($_REQUEST['feed_id']) || '' === $_REQUEST['feed_id']) {
             echo $this->showList();
+
             return;
         }
 
@@ -136,11 +122,11 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
         if (is_null($feed) || $feed->user_id !== $GLOBALS['auth']->auth['uid']) {
             echo $this->showList('No such feed');
+
             return;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
             $feed->url = $_POST['url'];
 
             $pie = $this->get_simplepie_from_user_feed($feed);
@@ -148,96 +134,88 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
             if ($error) {
                 $message = $error;
-            }
-            else {
+            } else {
                 $message = $feed->save()
-                    ? 'Newsfeed wurde geändert.'
-                    : 'Newsfeed konnte nicht geändert werden.';
+                         ? 'Newsfeed wurde geändert.'
+                         : 'Newsfeed konnte nicht geändert werden.';
             }
 
             echo $this->showList($message);
-            return;
-        }
 
-        else {
+            return;
+        } else {
             echo $this->factory->render('edit',
                                         compact('feed', 'plugin'),
-                                        $GLOBALS['template_factory']->open('layouts/base_without_infobox'));
+                                        $GLOBALS['template_factory']->open('layouts/base'));
         }
     }
 
-
-    function delete_action()
+    public function delete_action()
     {
-
         $this->has_to_be_authorized();
 
         if (isset($_REQUEST['feed_id']) && '' !== $_REQUEST['feed_id']) {
             $feed = FeedReader_Feed::find($_REQUEST['feed_id']);
         }
 
-        # AJAX
+        // AJAX
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-
             ob_end_clean();
 
             header('Content-Type: text/javascript');
 
             if (is_null($feed)) {
-                header('HTTP/1.1 404 Not found', TRUE, 404);
-            }
-            else {
+                header('HTTP/1.1 404 Not found', true, 404);
+            } else {
                 echo $this->factory->render('delete',
                                             array(
-                                                'plugin'  => $this,
-                                                'feed'    => $feed,
-                                                'success' => $feed->delete()),
-                                            $GLOBALS['template_factory']->open('layouts/base_without_infobox'));
+                                                'plugin' => $this,
+                                                'feed' => $feed,
+                                                'success' => $feed->delete(), ),
+                                            null);
             }
 
             ob_start(create_function('', 'return "";'));
         }
 
-        # NON AJAX
+        // NON AJAX
         else {
-
             Navigation::activateItem('/profile/feed_reader');
 
-            if (is_null($feed))
+            if (is_null($feed)) {
                 $message = 'Newsfeed existiert nicht.';
-            else if ($feed->delete())
-                $message = "Newsfeed wurde gelöscht.";
-            else
-                $message = "Newsfeed konnte nicht gelöscht werden.";
+            } elseif ($feed->delete()) {
+                $message = 'Newsfeed wurde gelöscht.';
+            } else {
+                $message = 'Newsfeed konnte nicht gelöscht werden.';
+            }
 
             echo $this->showList($message);
         }
     }
 
-
-    function sort_action()
+    public function sort_action()
     {
         if (!$this->is_authorized()) {
-            header('HTTP/1.1 403 Forbidden', TRUE, 403);
+            header('HTTP/1.1 403 Forbidden', true, 403);
             exit;
         }
 
         if (!FeedReader_Feed::sort($GLOBALS['auth']->auth['uid'],
                                    $_REQUEST['feeds'])) {
-            header('HTTP/1.1 404 Not found', TRUE, 404);
+            header('HTTP/1.1 404 Not found', true, 404);
             var_dump($this->error);
             exit;
         }
     }
 
-
-    function up_action()
+    public function up_action()
     {
-
         $this->has_to_be_authorized();
 
         if (!isset($_POST['feed_id']) || '' === $_POST['feed_id']) {
             echo $this->showList();
+
             return;
         }
 
@@ -253,13 +231,13 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         echo $this->showList($message);
     }
 
-
-    function down_action()
+    public function down_action()
     {
         $this->has_to_be_authorized();
 
         if (!isset($_POST['feed_id']) || '' === $_POST['feed_id']) {
             echo $this->showList();
+
             return;
         }
 
@@ -275,13 +253,14 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         echo $this->showList($message);
     }
 
-    function visibility_action()
+    public function visibility_action()
     {
         $this->has_to_be_authorized();
         Navigation::activateItem('/profile/feed_reader');
 
         if (!isset($_REQUEST['feed_id']) || '' === $_REQUEST['feed_id']) {
             echo $this->showList();
+
             return;
         }
 
@@ -290,23 +269,25 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
         if (is_null($feed) || $feed->user_id !== $GLOBALS['auth']->auth['uid']) {
             echo $this->showList('No such feed');
+
             return;
         }
 
         $feed->visibility = $feed->visibility ? false : true;
         $message = $feed->save()
-            ? 'Sichtbarkeit des Newsfeeds wurde geändert.'
-            : 'Sichtbarkeit des Newsfeeds konnte nicht geändert werden.';
+                 ? 'Sichtbarkeit des Newsfeeds wurde geändert.'
+                 : 'Sichtbarkeit des Newsfeeds konnte nicht geändert werden.';
 
         echo $this->showList($message);
+
         return;
     }
 
-    function get_simplepie_from_user_feed($user_feed)
+    public function get_simplepie_from_user_feed($user_feed)
     {
-
-        if (!class_exists('SimplePie'))
-            require_once dirname(__FILE__) . '/vendor/SimplePie 1.1.3/simplepie.inc';
+        if (!class_exists('SimplePie')) {
+            require_once dirname(__FILE__).'/vendor/simplepie.inc';
+        }
 
         $feed = new SimplePie($user_feed->url, $GLOBALS['TMP_PATH']);
         $feed->set_output_encoding('ISO-8859-1');
@@ -317,15 +298,16 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         return $feed;
     }
 
-
-    function shortdesc($string, $length)
+    public function shortdesc($string, $length)
     {
-        if (strlen($string) <= $length)
+        if (strlen($string) <= $length) {
             return $string;
-        $short_desc = trim(str_replace(array("\r","\n", "\t"), ' ',
+        }
+        $short_desc = trim(str_replace(array("\r", "\n", "\t"), ' ',
                                        strip_tags($string)));
         $desc = trim(substr($short_desc, 0, $length));
-        return $desc . (in_array(substr($desc, -1, 1), array('.', '!', '?'))
+
+        return $desc.(in_array(substr($desc, -1, 1), array('.', '!', '?'))
                         ? '' : '...');
     }
 
@@ -342,14 +324,15 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
      *  admin_url    admin link for this plugin (if any)
      *  admin_title  title for admin link (default: Administration)
      *
-     * @return object   template object to render or NULL
+     * @return object template object to render or NULL
      */
-    function getHomepageTemplate($user_id)
+    public function getHomepageTemplate($user_id)
     {
         $feeds = $this->getFeeds($user_id);
+
         return (sizeof($feeds) || $this->is_authorized())
             ? $this->getFeedsTemplate($feeds)
-            : NULL;
+            : null;
     }
 
     /**
@@ -365,32 +348,32 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
      *  admin_url    admin link for this plugin (if any)
      *  admin_title  title for admin link (default: Administration)
      *
-     * @return object   template object to render or NULL
+     * @return object template object to render or NULL
      */
-    function getPortalTemplate()
+    public function getPortalTemplate()
     {
         $feeds = $this->getFeeds($GLOBALS['auth']->auth['uid']);
 
         return (sizeof($feeds) || $this->is_authorized())
             ? $this->getFeedsTemplate($feeds)
-            : NULL;
+            : null;
 
         return $this->getFeedsTemplate($GLOBALS['auth']->auth['uid']);
     }
 
-    function getFeeds($user_id)
+    public function getFeeds($user_id)
     {
         $feeds = array();
         foreach (FeedReader_Feed::find_all($user_id) as $f) {
             if ($f->is_visible($GLOBALS['auth']->auth['uid'])) {
-                $feeds[] = FeedReader::get_simplepie_from_user_feed($f);
+                $feeds[] = self::get_simplepie_from_user_feed($f);
             }
         }
+
         return $feeds;
     }
 
-
-    function getFeedsTemplate($feeds)
+    public function getFeedsTemplate($feeds)
     {
         $limit = 5;
         $plugin = $this;

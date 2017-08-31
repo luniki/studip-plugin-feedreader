@@ -1,12 +1,14 @@
 <?php
 
-class AddVisibility extends DBMigration {
+class AddVisibility extends Migration
+{
+    public function up()
+    {
+        \DBManager::get()->query('ALTER TABLE feed_reader_feeds ADD visibility BOOLEAN NOT NULL');
+    }
 
-  function up() {
-    $this->db->query('ALTER TABLE feed_reader_feeds ADD visibility BOOLEAN NOT NULL');
-  }
-
-  function down() {
-    $this->db->query('ALTER TABLE feed_reader_feeds DROP visibility');
-  }
+    public function down()
+    {
+        \DBManager::get()->query('ALTER TABLE feed_reader_feeds DROP visibility');
+    }
 }

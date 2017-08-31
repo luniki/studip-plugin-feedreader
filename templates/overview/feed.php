@@ -8,17 +8,17 @@
             </a>
         <? else : ?>
             <a target="_blank" class="feed_reader_feed_title feed_reader_error" href="#">
-                <span class="favicon" style="background-image: url(<?= Assets::image_path('icons/16/red/exclaim.png') ?>)"></span>
+                <span class="favicon" style="<?= Icon::create('exclaim', Icon::ROLE_ATTENTION)->asCSS() ?>"></span>
                 Fehler
             </a>
         <? endif ?>
 
         <div class="feed_reader_nubbin">
-                <? if ($plugin->is_authorized()) : ?>
-                    <?= $this->render_partial('overview/my_nubbin', compact($feed)) ?>
-                <? else : ?>
-                    <?= $this->render_partial('overview/other_nubbin', compact($feed)) ?>
-                <? endif ?>
+            <? if ($plugin->is_authorized()) : ?>
+                <?= $this->render_partial('overview/my_nubbin', compact($feed)) ?>
+            <? else : ?>
+                <?= $this->render_partial('overview/other_nubbin', compact($feed)) ?>
+            <? endif ?>
         </div>
     </div>
 
