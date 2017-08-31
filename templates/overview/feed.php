@@ -8,7 +8,7 @@
             </a>
         <? else : ?>
             <a target="_blank" class="feed_reader_feed_title feed_reader_error" href="#">
-                <span class="favicon" style="<?= Icon::create('exclaim', Icon::ROLE_ATTENTION)->asCSS() ?>"></span>
+                <span class="favicon" style="<?= Icon::create('exclaim', 'attention')->asCSS() ?>"></span>
                 Fehler
             </a>
         <? endif ?>

@@ -11,7 +11,7 @@
     <? $enclosure = $item->get_enclosure(); ?>
     <? if ($enclosure && $enclosure->get_link()) : ?>
         <a href="<?= htmlReady($enclosure->get_link()) ?>" target="_blank">
-            <?= Icon::create('link-extern', Icon::ROLE_INFO) ?>
+            <?= Icon::create('link-extern', 'info') ?>
         </a>
     <? endif ?>
 </div>

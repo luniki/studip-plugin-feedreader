@@ -1,6 +1,6 @@
 <?php
 $title = _("Feed Reader");
-$icon_url = Icon::create('rss', ICON::ROLE_INFO_ALT)->asImagePath();
+$icon_url = Icon::create('rss', 'info_alt')->asImagePath();
 if ($plugin->is_authorized()) {
     $admin_url = PluginEngine::getURL($plugin, null, '');
     $admin_title = 'Feed-Reader-Verwaltung';
