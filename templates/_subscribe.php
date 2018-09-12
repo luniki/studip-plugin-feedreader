@@ -5,5 +5,5 @@
     <label>Newsfeed abonnieren:
         <input type="text" name="url" />
     </label>
-    <?= Studip\Button::create(_('Hinzufügen')) ?>
+    <?= Studip\Button::create(_('HinzufÃ¼gen')) ?>
 </form>

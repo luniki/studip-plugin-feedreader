@@ -25,7 +25,7 @@
     <? if (sizeof($items = $feed->get_items(0, $limit))) : ?>
         <?= $this->render_partial_collection('overview/item', $feed->get_items(0, $limit)) ?>
     <? elseif ($feed->get_title()) : ?>
-        <div class="feed_reader_item"> Der Newsfeed enth‰lt keine Artikel. </div>
+        <div class="feed_reader_item"> Der Newsfeed enth√§lt keine Artikel. </div>
     <? else : ?>
         <div class="feed_reader_item">
             Der Newsfeed <a target="_blank" href="<?= htmlReady($feed->feed_url) ?>"><?= htmlReady($feed->feed_url) ?></a> ist fehlerhaft.

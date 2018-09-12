@@ -136,8 +136,8 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
                 $message = $error;
             } else {
                 $message = $feed->save()
-                         ? 'Newsfeed wurde geändert.'
-                         : 'Newsfeed konnte nicht geändert werden.';
+                         ? 'Newsfeed wurde geÃ¤ndert.'
+                         : 'Newsfeed konnte nicht geÃ¤ndert werden.';
             }
 
             echo $this->showList($message);
@@ -185,9 +185,9 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
             if (is_null($feed)) {
                 $message = 'Newsfeed existiert nicht.';
             } elseif ($feed->delete()) {
-                $message = 'Newsfeed wurde gelöscht.';
+                $message = 'Newsfeed wurde gelÃ¶scht.';
             } else {
-                $message = 'Newsfeed konnte nicht gelöscht werden.';
+                $message = 'Newsfeed konnte nicht gelÃ¶scht werden.';
             }
 
             echo $this->showList($message);
@@ -275,8 +275,8 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
 
         $feed->visibility = $feed->visibility ? false : true;
         $message = $feed->save()
-                 ? 'Sichtbarkeit des Newsfeeds wurde geändert.'
-                 : 'Sichtbarkeit des Newsfeeds konnte nicht geändert werden.';
+                 ? 'Sichtbarkeit des Newsfeeds wurde geÃ¤ndert.'
+                 : 'Sichtbarkeit des Newsfeeds konnte nicht geÃ¤ndert werden.';
 
         echo $this->showList($message);
 
@@ -290,7 +290,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
         }
 
         $feed = new SimplePie($user_feed->url, $GLOBALS['TMP_PATH']);
-        $feed->set_output_encoding('ISO-8859-1');
+        $feed->set_output_encoding('UTF-8');
         $feed->init();
 
         $feed->id = $user_feed->id;

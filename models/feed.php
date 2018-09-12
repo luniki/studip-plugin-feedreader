@@ -42,7 +42,7 @@ function distance_of_time_in_words($from_time, $to_time = null, $include_seconds
             } else if ($distance_in_seconds >= 11 && $distance_in_seconds <= 20) {
                 $string = _('weniger als 20 Sekunden');
             } else if ($distance_in_seconds >= 21 && $distance_in_seconds <= 40) {
-                $string = _('½ Minute');
+                $string = _('Â½ Minute');
             } else if ($distance_in_seconds >= 41 && $distance_in_seconds <= 59) {
                 $string = _('weniger als 1 Minute');
             } else {
@@ -70,7 +70,7 @@ function distance_of_time_in_words($from_time, $to_time = null, $include_seconds
     } else if ($distance_in_minutes >= 525960 && $distance_in_minutes <= 1051919) {
         $string = _('ca. 1 Jahr');
     } else {
-        $string = _('über %years% Jahren');
+        $string = _('Ã¼ber %years% Jahren');
         $parameters['%years%'] = round($distance_in_minutes / 525960);
     }
 

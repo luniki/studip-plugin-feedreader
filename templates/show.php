@@ -16,9 +16,9 @@
 
                 <a href="<?= PluginEngine::getLink($plugin, array('feed_id' => $feed->id), 'visibility') ?>">
                     <? if ($feed->visibility) { ?>
-                        <?= Icon::create('visibility-visible')->asImg(['title' => 'Newsfeed ist für alle sichtbar. Klicken Sie, um ihn zu verstecken!']) ?>
+                        <?= Icon::create('visibility-visible')->asImg(['title' => 'Newsfeed ist fÃ¼r alle sichtbar. Klicken Sie, um ihn zu verstecken!']) ?>
                     <? } else { ?>
-                        <?= Icon::create('visibility-invisible')->asImg(['title' => 'Newsfeed ist nur für Sie sichtbar. Klicken Sie, um ihn für alle sichtbar zu machen!']) ?>
+                        <?= Icon::create('visibility-invisible')->asImg(['title' => 'Newsfeed ist nur fÃ¼r Sie sichtbar. Klicken Sie, um ihn fÃ¼r alle sichtbar zu machen!']) ?>
                     <? } ?>
                 </a>
 

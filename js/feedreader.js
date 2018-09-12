@@ -18,7 +18,7 @@ jQuery(function ($) {
     };
 
     var deleteFeed = function (anchor) {
-        if (confirm('Diesen Newsfeed wirklich löschen?')) {
+        if (confirm('Diesen Newsfeed wirklich lÃ¶schen?')) {
             var feed = $(anchor).parents(".feed_reader_feed");
             $.post(
                 urltmpl({action: "delete"}),

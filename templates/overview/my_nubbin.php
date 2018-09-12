@@ -7,7 +7,7 @@
 
     <li class="feed_reader_edit">
         <a href="<?= PluginEngine::getLink($plugin, array('feed_id' => $feed->id), 'edit') ?>">
-            <span><?= _('Ändern') ?></span>
+            <span><?= _('Ã„ndern') ?></span>
         </a>
     </li>
 </ul>

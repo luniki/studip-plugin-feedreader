@@ -31,10 +31,10 @@ if ($plugin->is_authorized()) {
             <p>
                 Sie haben derzeit noch keine Newsfeeds abonniert.
                 <br>
-                Sobald Sie einen oder mehrere Newsfeed abonniert haben, können Sie und Ihre
-                Gäste diese Newsfeeds auf Ihrer <a href="<?= URLHelper::getLink("about.php") ?>">Stud.IP-Homepage</a> lesen.
+                Sobald Sie einen oder mehrere Newsfeed abonniert haben, kÃ¶nnen Sie und Ihre
+                GÃ¤ste diese Newsfeeds auf Ihrer <a href="<?= URLHelper::getLink("about.php") ?>">Stud.IP-Homepage</a> lesen.
 
-                Außerdem erhalten Sie Ihre Newsfeeds auch auf ihrer
+                AuÃŸerdem erhalten Sie Ihre Newsfeeds auch auf ihrer
                 <a href="<?= URLHelper::getLink("index.php") ?>">Stud.IP-Startseite</a>.
             </p>
         </div>
