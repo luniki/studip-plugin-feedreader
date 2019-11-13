@@ -34,7 +34,7 @@ class FeedReader extends StudipPlugin implements HomepagePlugin, PortalPlugin
     {
         parent::__construct();
 
-        if (Navigation::hasItem('/profile') && $this->is_authorized()) {
+        if (Navigation::hasItem('/profile') && $this->is_authorized() && $this->isActivated(null, 'user')) {
             Navigation::addItem('/profile/feed_reader',
                                 new AutoNavigation('Feed Reader',
                                                    PluginEngine::getUrl($this, null, '')));
